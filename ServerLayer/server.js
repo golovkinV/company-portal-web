@@ -39,9 +39,5 @@ app.listen(PORT, () => {
 });
 
 // Requests routes
-// require("./routes/user.routes.js")(app);
-// require("./routes/role.routes")(app);
-// require("./routes/profile.routes.js")(app);
-// require("./routes/event.routes.js")(app);
-// require("./routes/document.routes.js")(app);
-// require("./routes/image.routes")(app);
+require("./routes/job.routes.js")(app);
+require("./routes/reward.routes")(app);
