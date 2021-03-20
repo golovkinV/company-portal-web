@@ -7,9 +7,9 @@ const db = {};
 db.mongoose = mongoose;
 db.url = dbConfig.url;
 
-// db.user = require("./models/user.js")(mongoose);
-// db.role = require("./models/role.js")(mongoose);
-// db.event = require("./models/event.js")(mongoose);
-// db.document = require("./models/document")(mongoose);
+db.user = require("./models/user.js")(mongoose);
+db.job = require("./models/job.js")(mongoose);
+db.reward = require("./models/reward.js")(mongoose);
+db.shopStatus = require("./models/shopStatus.js")(mongoose);
 
 module.exports = db;
