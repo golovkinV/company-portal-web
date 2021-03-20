@@ -9,7 +9,7 @@ module.exports = mongoose => {
         lastName: String,
         createdAt: Date,
         avatar: String,
-        money: String,
+        money: Number,
         orders: [{
             type: Schema.Types.ObjectId,
             ref: "Order"

@@ -1,19 +1,21 @@
+
 const db = require("../index");
 const hash = require("password-hash")
 const User = db.user;
 const Job = db.job
 const Reward = db.reward
+const ShopStatus = db.shopStatus
 const noJobId = "6055cf93a8be403241264252"
 const firstRewardId = "6055d119a8be403241264253"
-const firstShopStatusId = ""
+const firstShopStatusId = "6055d9df915fa336f74faba6"
 
 // Fetch user
 exports.findOne = (req, res) => {
     const id = req.params.id;
     User.findById(id)
-        .populate("orders")
+        // .populate("orders")
         .populate("rewards")
-        .populate("tasks")
+        // .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
@@ -32,9 +34,9 @@ exports.findOne = (req, res) => {
 // Fetch users
 exports.findAll = (req, res) => {
     User.find()
-        .populate("orders")
+        // .populate("orders")
         .populate("rewards")
-        .populate("tasks")
+        // .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
@@ -78,7 +80,15 @@ exports.register = (req, res) => {
                 .catch(err => {
                     res
                         .status(500)
-                        .send({ message: `Error retrieving Job with id=${firstRewardId}` });
+                        .send({ message: `Error retrieving Reward with id=${firstRewardId}` });
+                });
+
+            ShopStatus.findByIdAndUpdate(firstShopStatusId, { $addToSet: { users: [data.id] } }, { useFindAndModify: false })
+                .then(data => {})
+                .catch(err => {
+                    res
+                        .status(500)
+                        .send({ message: `Error retrieving Shop Status with id=${firstShopStatusId}` });
                 });
 
             res.send(data)
@@ -96,18 +106,19 @@ exports.register = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const user = req.body
-    const currentJob = user.currentJob
-    const newJob = user.data.job
+
+    const newJob = user.job
+    const newShopStatus = user.shopStatus
 
     User.findByIdAndUpdate(id, user.data, { useFindAndModify: false })
         .then(data => {
-            if (currentJob !== newJob) {
+            const currentJob = data.job
+            const currentShopStatus = data.shopStatus
+            if (!newJob && currentJob !== newJob) {
                 Job.findByIdAndUpdate(newJob, { $addToSet: { users: [data.id] } }, { useFindAndModify: false })
                     .then(resp => {
                         Job.findByIdAndUpdate(currentJob, { $pull: { users: data.id } }, { useFindAndModify: false })
-                            .then(resp => {
-                                res.send(data)
-                            })
+                            .then(resp => {})
                             .catch(err => {
                                 res
                                     .status(500)
@@ -123,9 +134,31 @@ exports.update = (req, res) => {
                                 message: err.message || "Some error occurred while updating the Job"
                             });
                     });
-            } else {
-                res.send(data)
             }
+
+            if (!newShopStatus && currentShopStatus !== newShopStatus) {
+                ShopStatus.findByIdAndUpdate(newShopStatus, { $addToSet: { users: [data.id] } }, { useFindAndModify: false })
+                    .then(resp => {
+                        ShopStatus.findByIdAndUpdate(currentShopStatus, { $pull: { users: data.id } }, { useFindAndModify: false })
+                            .then(resp => {})
+                            .catch(err => {
+                                res
+                                    .status(500)
+                                    .send({
+                                        message: err.message || "Some error occurred while updating the Shop Status"
+                                    });
+                            });
+                    })
+                    .catch(err => {
+                        res
+                            .status(500)
+                            .send({
+                                message: err.message || "Some error occurred while updating the Shop Status"
+                            });
+                    });
+            }
+
+            res.send(data)
         })
         .catch(err => {
             res
@@ -140,9 +173,9 @@ exports.login = (req, res) => {
     const login = user.login
     const password = user.password
     User.findOne({ login: login })
-        .populate("orders")
+        // .populate("orders")
         .populate("rewards")
-        .populate("tasks")
+        // .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
