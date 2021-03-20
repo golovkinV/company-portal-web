@@ -43,3 +43,5 @@ require("./routes/job.routes.js")(app);
 require("./routes/reward.routes.js")(app);
 require("./routes/shopStatus.routes.js")(app);
 require("./routes/user.routes.js")(app);
+require("./routes/taskStatus.routes.js")(app);
+require("./routes/task.routes.js")(app);

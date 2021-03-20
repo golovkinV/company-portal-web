@@ -2,19 +2,20 @@
 module.exports = mongoose => {
     const Schema = mongoose.Schema;
 
-    const jobSchema = new Schema({
+    const statusSchema = new Schema({
         name: String,
-        users: [{
+        key: String,
+        tasks: [{
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: "Task",
         }]
     })
 
-    jobSchema.method("toJSON", function() {
+    statusSchema.method("toJSON", function() {
         const { __v, _id, ...object } = this.toObject();
         object.id = _id;
         return object;
     });
 
-    return mongoose.model("Job", jobSchema);
+    return mongoose.model("TaskStatus", statusSchema);
 };
