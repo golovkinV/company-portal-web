@@ -58,6 +58,66 @@ exports.add = (req, res) => {
         });
 };
 
+// Delete users from task
+exports.deleteUsers = (req, res) => {
+    const id = req.params.id;
+    const userParams = req.body
+    const usersId = userParams.users
+
+    Task.updateOne(
+        { _id: id },
+        { $pull: { users: { $in: usersId } } })
+        .then(data => {
+            User.updateMany(
+                { _id: { $in: usersId } },
+                { $pull: { tasks: id } })
+                .then(resp => {})
+                .catch(err => {
+                    res
+                        .status(500)
+                        .send({
+                            message: err.message || "Some error occurred while removing the Task in Users"
+                        });
+                })
+            res.send(data)
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .send({
+                    message: err.message || "Some error occurred while updating the Task"
+                });
+        })
+}
+
+// Update task
+exports.update = (req, res) => {
+    const id = req.params.id;
+    const task = req.body
+    const users = task.users
+    Task.findByIdAndUpdate(id, task, { useFindAndModify: false })
+        .then(data => {
+            User.updateMany(
+                { _id: { $in: users }},
+                { $addToSet: { tasks: [data.id] } },
+                { multi: true })
+                .then(resp => {})
+                .catch(err => {
+                    res
+                        .status(500)
+                        .send({
+                            message: err.message || "Some error occurred while adding the Task for Users"
+                        });
+                })
+            res.send(data)
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .send({ message: `Error updating Task with id=${id}` });
+        });
+}
+
 // Delete task
 exports.delete = (req, res) => {
     const id = req.params.id;

@@ -13,6 +13,12 @@ module.exports = app => {
     // All task
     router.get("/all", taskController.findAll);
 
+    // Delete users
+    router.put("/delete_users/:id", taskController.deleteUsers)
+
+    // Update task
+    router.put("/:id", taskController.update)
+
     // Fetch task
     router.get("/:id", taskController.findOne)
 
