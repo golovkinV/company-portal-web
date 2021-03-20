@@ -107,18 +107,21 @@ exports.update = (req, res) => {
     const id = req.params.id;
     const user = req.body
 
+    const currentJob = user.currentJob
+    const currentShopStatus = user.currentShopStatus
+
     const newJob = user.job
     const newShopStatus = user.shopStatus
 
-    User.findByIdAndUpdate(id, user.data, { useFindAndModify: false })
+    User.findByIdAndUpdate(id, user, { useFindAndModify: false })
         .then(data => {
-            const currentJob = data.job
-            const currentShopStatus = data.shopStatus
-            if (!newJob && currentJob !== newJob) {
+            if (!!newJob && newJob !== currentJob) {
                 Job.findByIdAndUpdate(newJob, { $addToSet: { users: [data.id] } }, { useFindAndModify: false })
                     .then(resp => {
                         Job.findByIdAndUpdate(currentJob, { $pull: { users: data.id } }, { useFindAndModify: false })
-                            .then(resp => {})
+                            .then(resp => {
+                                data.job = newJob
+                            })
                             .catch(err => {
                                 res
                                     .status(500)
@@ -136,11 +139,13 @@ exports.update = (req, res) => {
                     });
             }
 
-            if (!newShopStatus && currentShopStatus !== newShopStatus) {
+            if (!!newShopStatus && newShopStatus !== currentShopStatus) {
                 ShopStatus.findByIdAndUpdate(newShopStatus, { $addToSet: { users: [data.id] } }, { useFindAndModify: false })
                     .then(resp => {
                         ShopStatus.findByIdAndUpdate(currentShopStatus, { $pull: { users: data.id } }, { useFindAndModify: false })
-                            .then(resp => {})
+                            .then(resp => {
+                                data.shopStatus = newShopStatus
+                            })
                             .catch(err => {
                                 res
                                     .status(500)
