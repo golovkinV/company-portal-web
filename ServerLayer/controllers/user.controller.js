@@ -15,7 +15,7 @@ exports.findOne = (req, res) => {
     User.findById(id)
         // .populate("orders")
         .populate("rewards")
-        // .populate("tasks")
+        .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
@@ -36,7 +36,7 @@ exports.findAll = (req, res) => {
     User.find()
         // .populate("orders")
         .populate("rewards")
-        // .populate("tasks")
+        .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
@@ -180,7 +180,7 @@ exports.login = (req, res) => {
     User.findOne({ login: login })
         // .populate("orders")
         .populate("rewards")
-        // .populate("tasks")
+        .populate("tasks")
         .populate("job")
         .populate("shopStatus")
         .then(data => {
