@@ -70,7 +70,8 @@ exports.deleteUsers = (req, res) => {
         .then(data => {
             User.updateMany(
                 { _id: { $in: usersId } },
-                { $pull: { tasks: id } })
+                { $pull: { tasks: id } },
+                { multi: true })
                 .then(resp => {})
                 .catch(err => {
                     res
