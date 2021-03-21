@@ -57,7 +57,7 @@ exports.delete = (req, res) => {
         });
 };
 
-// Fetch job
+// Fetch status
 exports.findOne = (req, res) => {
     const id = req.params.id;
     Status.findById(id)

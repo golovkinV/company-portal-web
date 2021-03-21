@@ -13,7 +13,6 @@ const firstShopStatusId = "6055d9df915fa336f74faba6"
 exports.findOne = (req, res) => {
     const id = req.params.id;
     User.findById(id)
-        // .populate("orders")
         .populate("rewards")
         .populate("tasks")
         .populate("job")
@@ -34,7 +33,6 @@ exports.findOne = (req, res) => {
 // Fetch users
 exports.findAll = (req, res) => {
     User.find()
-        // .populate("orders")
         .populate("rewards")
         .populate("tasks")
         .populate("job")
@@ -178,7 +176,6 @@ exports.login = (req, res) => {
     const login = user.login
     const password = user.password
     User.findOne({ login: login })
-        // .populate("orders")
         .populate("rewards")
         .populate("tasks")
         .populate("job")
