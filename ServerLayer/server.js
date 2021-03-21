@@ -46,3 +46,4 @@ require("./routes/user.routes.js")(app);
 require("./routes/taskStatus.routes.js")(app);
 require("./routes/task.routes.js")(app);
 require("./routes/productState.routes.js")(app);
+require("./routes/product.routes.js")(app);

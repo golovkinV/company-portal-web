@@ -1,7 +1,7 @@
 const db = require("../index")
 const ProductState = db.productState
 const Product = db.product
-const noStateId = ""
+const noStateId = "6056ef0e15ec5660bcfa499d"
 
 // All states
 exports.findAll = (req, res) => {
@@ -48,18 +48,28 @@ exports.delete = (req, res) => {
                     .status(404)
                     .send({ message: `Cannot delete Product State with id=${id}` });
             else {
-                Product.updateMany(
-                    { _id: { $in: data.products } },
-                    { $set: { state: noStateId } },
-                    { multi: true })
-                    .then(resp => {})
+                ProductState.findByIdAndUpdate(noStateId, { $addToSet: { products: data.products } }, { useFindAndModify: false })
+                    .then(resp => {
+                        Product.updateMany(
+                            { _id: { $in: data.products } },
+                            { $set: { state: noStateId } },
+                            { multi: true })
+                            .then(resp => {
+
+                            })
+                            .catch(err => {
+                                res
+                                    .status(500)
+                                    .send({
+                                        message: err.message || "Some error occurred while removing the Product State in Product"
+                                    });
+                            })
+                    })
                     .catch(err => {
                         res
                             .status(500)
-                            .send({
-                                message: err.message || "Some error occurred while removing the Task in Users"
-                            });
-                    })
+                            .send({ message: `Error retrieving Product State with id=${noStateId}` });
+                    });
                 res.send(data);
             }
         })
