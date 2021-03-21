@@ -61,6 +61,8 @@ exports.add = (req, res) => {
 exports.userTasks = (req, res) => {
     const userId = req.params.id;
     Task.find({ users: userId })
+        .populate("users")
+        .populate("status")
         .then(data => {
             res.send(data)
         })
