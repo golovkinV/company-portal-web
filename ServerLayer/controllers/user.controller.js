@@ -58,6 +58,7 @@ exports.register = (req, res) => {
         firstName: userParams.firstName,
         lastName: userParams.lastName,
         avatar: userParams.avatar,
+        money: 0,
         job: jobId,
         rewards: [firstRewardId],
         shopStatus: firstShopStatusId
