@@ -58,6 +58,21 @@ exports.add = (req, res) => {
         });
 };
 
+exports.userTasks = (req, res) => {
+    const userId = req.params.id;
+    Task.find({ users: userId })
+        .then(data => {
+            res.send(data)
+        })
+        .catch(err => {
+            res
+                .status(500)
+                .send({
+                    message: err.message || "Some error occurred while fetching Tasks for User"
+                });
+        })
+}
+
 // Delete users from task
 exports.deleteUsers = (req, res) => {
     const id = req.params.id;

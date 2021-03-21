@@ -22,5 +22,8 @@ module.exports = app => {
     // Fetch task
     router.get("/:id", taskController.findOne)
 
+    // Fetch user tasks
+    router.get("/user/:id", taskController.userTasks)
+    
     app.use('/api/task', router);
 };
